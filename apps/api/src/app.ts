@@ -5,6 +5,7 @@ import morgan from "morgan";
 
 import healthRoutes from "./routes/health.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import projectRoutes from "./routes/project.routes.js";
 
 
 const app = express();
@@ -17,6 +18,8 @@ app.use(express.json());
 
 
 app.use("/health", healthRoutes);
+app.use("/projects", projectRoutes);
 app.use("/users", userRoutes);
+
 
 export default app;
