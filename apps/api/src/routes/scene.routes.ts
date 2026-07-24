@@ -1,20 +1,26 @@
 import { Router } from "express";
 
 import {
-    createScene,
-    getScenes
+  createScene,
+  getScenesByProject
 } from "../controllers/scene.controller.js";
 
 
 const router = Router();
 
 
+// POST CREATE SCENE
+router.post(
+  "/",
+  createScene
+);
 
-router.post("/", createScene);
 
-
-router.get("/:projectId", getScenes);
-
+// GET PROJECT SCENES
+router.get(
+  "/project/:projectId",
+  getScenesByProject
+);
 
 
 export default router;

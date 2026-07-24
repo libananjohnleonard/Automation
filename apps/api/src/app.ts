@@ -19,8 +19,8 @@ app.use(express.json());
 
 
 app.use("/health", healthRoutes);
-app.use("/projects", projectRoutes);
 app.use("/users", userRoutes);
+app.use("/projects", projectRoutes);
 app.use("/scenes", sceneRoutes);
 
 
