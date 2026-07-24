@@ -11,6 +11,7 @@ import assetRoutes from "./routes/asset.routes.js";
 import generatedVideoRoutes from "./routes/generatedVideo.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 import authRoutes from "./routes/auth.routes.js";
+import generationRoutes from "./routes/generation.routes.js";
 
 
 const app = express();
@@ -29,6 +30,7 @@ app.use("/auth", authRoutes);
 
 app.use("/users", userRoutes);
 app.use("/projects", projectRoutes);
+app.use("/projects", generationRoutes);
 app.use("/scenes", sceneRoutes);
 app.use("/assets", assetRoutes);
 app.use("/videos", generatedVideoRoutes);

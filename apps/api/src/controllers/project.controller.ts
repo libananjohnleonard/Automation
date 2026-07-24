@@ -46,8 +46,8 @@ export const createProject = async (
 
       message:"Failed creating project",
 
-      error: error instanceof Error 
-        ? error.message 
+      error: error instanceof Error
+        ? error.message
         : error
 
     });
@@ -82,6 +82,12 @@ export const getProjects = async (
       orderBy:{
 
         createdAt:"desc"
+
+      },
+
+      include:{
+
+        scenes:true
 
       }
 
