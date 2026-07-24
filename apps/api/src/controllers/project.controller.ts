@@ -10,19 +10,25 @@ export const createProject = async (
 
   try {
 
+    console.log("USER:", req.user);
+
+
     const {
       title,
-      description,
-      userId
+      description
     } = req.body;
 
 
     const project = await prisma.project.create({
 
       data: {
+
         title,
+
         description,
-        userId
+
+        userId: req.user!.id
+
       }
 
     });
@@ -33,9 +39,17 @@ export const createProject = async (
 
   } catch(error){
 
+    console.log(error);
+
+
     res.status(500).json({
+
       message:"Failed creating project",
-      error
+
+      error: error instanceof Error 
+        ? error.message 
+        : error
+
     });
 
   }
@@ -44,32 +58,55 @@ export const createProject = async (
 
 
 
-// GET ALL PROJECTS
 
+// GET USER PROJECTS
 export const getProjects = async (
   req: Request,
   res: Response
-)=>{
+) => {
 
- try{
-
-
- const projects = await prisma.project.findMany();
+  try {
 
 
- res.json(projects);
+    console.log("USER:", req.user);
 
 
+    const projects = await prisma.project.findMany({
 
- }catch(error){
+      where:{
 
- res.status(500).json({
-  message:"Failed fetching projects",
-  error
- });
+        userId:req.user!.id
+
+      },
+
+      orderBy:{
+
+        createdAt:"desc"
+
+      }
+
+    });
 
 
- }
+    res.json(projects);
 
+
+  } catch(error){
+
+
+    console.log(error);
+
+
+    res.status(500).json({
+
+      message:"Failed fetching projects",
+
+      error: error instanceof Error
+        ? error.message
+        : error
+
+    });
+
+  }
 
 };

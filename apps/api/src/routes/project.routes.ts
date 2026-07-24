@@ -12,16 +12,16 @@ const router = Router();
 
 
 router.post(
- "/",
- authMiddleware,
- createProject
+  "/",
+  authMiddleware,
+  createProject
 );
 
 
 router.get(
- "/",
- authMiddleware,
- getProjects
+  "/",
+  authMiddleware,
+  getProjects
 );
 
 

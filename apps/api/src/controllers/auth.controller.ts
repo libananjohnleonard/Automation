@@ -138,18 +138,13 @@ export const login = async (
 
 const token =
   jwt.sign(
-
     {
-      id:user.id,
-      email:user.email
+      userId: user.id
     },
-
     JWT_SECRET,
-
     {
       expiresIn: JWT_EXPIRES_IN
     }
-
   );
 
 

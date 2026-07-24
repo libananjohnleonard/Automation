@@ -1,17 +1,11 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-
-interface AuthRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-  };
-}
+import { JWT_SECRET } from "../config/jwt.js";
 
 
 export const authMiddleware = (
-  req: AuthRequest,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
@@ -22,41 +16,76 @@ export const authMiddleware = (
 
 
     if (!authHeader) {
+
       return res.status(401).json({
-        message: "No token provided"
+        message: "Authorization header missing"
       });
+
     }
 
 
-    const token = authHeader.split(" ")[1];
+    const parts = authHeader.split(" ");
+
+
+    if (
+      parts.length !== 2 ||
+      parts[0] !== "Bearer"
+    ) {
+
+      return res.status(401).json({
+        message: "Invalid authorization format"
+      });
+
+    }
+
+
+    const token = parts[1];
 
 
     if (!token) {
+
       return res.status(401).json({
-        message:"Invalid token format"
+        message: "Token missing"
       });
+
     }
 
 
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET!
-    ) as {
-      id:string;
-      email:string;
+      JWT_SECRET
+    ) as unknown as {
+      userId: string;
     };
 
 
-    req.user = decoded;
+    if (!decoded.userId) {
+
+      return res.status(401).json({
+        message: "Invalid token payload"
+      });
+
+    }
+
+
+    req.user = {
+      id: decoded.userId
+    };
+
+
+    console.log("Authenticated User:", req.user);
 
 
     next();
 
 
-  } catch(error){
+  } catch (error) {
+
+    console.log("JWT Error:", error);
+
 
     return res.status(401).json({
-      message:"Invalid token"
+      message: "Invalid token"
     });
 
   }
