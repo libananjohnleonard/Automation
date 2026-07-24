@@ -7,6 +7,7 @@ import healthRoutes from "./routes/health.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import projectRoutes from "./routes/project.routes.js";
 import sceneRoutes from "./routes/scene.routes.js";
+import assetRoutes from "./routes/asset.routes.js";
 
 
 const app = express();
@@ -22,6 +23,7 @@ app.use("/health", healthRoutes);
 app.use("/users", userRoutes);
 app.use("/projects", projectRoutes);
 app.use("/scenes", sceneRoutes);
+app.use("/assets", assetRoutes);
 
 
 export default app;
