@@ -2,11 +2,15 @@ import type { Request, Response } from "express";
 import prisma from "../lib/prisma.js";
 
 
+// =====================================
 // CREATE SCENE
+// POST /scenes
+// =====================================
 export const createScene = async (
   req: Request,
   res: Response
 ) => {
+
   try {
 
     const {
@@ -20,7 +24,9 @@ export const createScene = async (
 
 
     const scene = await prisma.scene.create({
+
       data: {
+
         project: {
           connect: {
             id: projectId
@@ -28,11 +34,17 @@ export const createScene = async (
         },
 
         script,
-        duration,
+
+        duration: duration ?? 5,
+
         imageUrl,
+
         voiceUrl,
+
         order
+
       }
+
     });
 
 
@@ -41,23 +53,38 @@ export const createScene = async (
 
   } catch (error) {
 
+    console.error(error);
+
     res.status(500).json({
+
       message: "Failed creating scene",
+
       error
+
     });
 
   }
+
 };
 
 
 
+
+// =====================================
 // GET SCENES BY PROJECT
+// GET /scenes/project/:projectId
+// =====================================
 export const getScenesByProject = async (
+
   req: Request,
+
   res: Response
+
 ) => {
 
+
   try {
+
 
     const projectId = req.params.projectId as string;
 
@@ -65,11 +92,15 @@ export const getScenesByProject = async (
     const scenes = await prisma.scene.findMany({
 
       where: {
+
         projectId
+
       },
 
       orderBy: {
+
         order: "asc"
+
       }
 
     });
@@ -78,13 +109,22 @@ export const getScenesByProject = async (
     res.json(scenes);
 
 
-  } catch(error){
+  } catch(error) {
+
+
+    console.error(error);
+
 
     res.status(500).json({
-      message:"Failed fetching scenes",
+
+      message: "Failed fetching scenes",
+
       error
+
     });
 
+
   }
+
 
 };

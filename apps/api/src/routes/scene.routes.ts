@@ -9,7 +9,8 @@ import {
 const router = Router();
 
 
-// POST CREATE SCENE
+// CREATE SCENE
+// POST /scenes
 router.post(
   "/",
   createScene
@@ -17,6 +18,7 @@ router.post(
 
 
 // GET PROJECT SCENES
+// GET /scenes/project/:projectId
 router.get(
   "/project/:projectId",
   getScenesByProject
