@@ -5,6 +5,7 @@ import prisma from "../lib/prisma.js";
 import { generateScript } from "../services/ai.service.js";
 import { generateImage } from "../services/image.service.js";
 import { generateVoice } from "../services/voice.service.js";
+import { createAsset } from "../services/asset.service.js";
 
 
 // GENERATE PROJECT AD
@@ -48,17 +49,30 @@ export const generateProjectAd = async (
         async (scene) => {
 
 
-          // Generate image
-          const image = await generateImage(
-            scene.script
-          );
+const image = await generateImage(
+  scene.script
+);
 
 
-          // Generate voice
-          const voice = await generateVoice(
-            scene.script
-          );
+const voice = await generateVoice(
+  scene.script
+);
 
+
+// Save image asset
+await createAsset(
+  project.id,
+  "IMAGE",
+  image.url
+);
+
+
+// Save voice asset
+await createAsset(
+  project.id,
+  "AUDIO",
+  voice.url
+);
 
           // Save scene
           return prisma.scene.create({
