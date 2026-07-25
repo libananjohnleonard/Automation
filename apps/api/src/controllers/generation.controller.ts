@@ -2,9 +2,8 @@ import type { Request, Response } from "express";
 
 import prisma from "../lib/prisma.js";
 
-import {
-  generateScript
-} from "../services/ai.service.js";
+import { generateScript } from "../services/ai.service.js";
+import { generateImage } from "../services/image.service.js";
 
 
 // GENERATE PROJECT AD
@@ -18,92 +17,89 @@ export const generateProjectAd = async (
     const projectId = req.params.id as string;
 
 
-    const project =
-      await prisma.project.findUnique({
+    const project = await prisma.project.findUnique({
 
-        where:{
-          id: projectId
-        }
+      where: {
+        id: projectId
+      }
 
-      });
+    });
 
 
-    if(!project){
+    if (!project) {
 
       return res.status(404).json({
-        message:"Project not found"
+        message: "Project not found"
       });
 
     }
 
 
-    const aiResult =
-      await generateScript(
-        project.title
-      );
+    const aiResult = await generateScript(
+      project.title
+    );
 
 
-    const scenes =
-      await Promise.all(
+    const scenes = await Promise.all(
 
-        aiResult.scenes.map(
-          async(scene)=>{
+      aiResult.scenes.map(
+        async (scene) => {
 
+          // Generate image for this scene
+          const image = await generateImage(scene.script);
 
-            return prisma.scene.create({
+          return prisma.scene.create({
 
-              data:{
+            data: {
 
-                project:{
-                  connect:{
-                    id:project.id
-                  }
-                },
+              project: {
+                connect: {
+                  id: project.id
+                }
+              },
 
-                order:scene.order,
+              order: scene.order,
 
-                script:scene.script,
+              script: scene.script,
 
-                duration:5
+              duration: 5,
 
-              }
+              imageUrl: image.url
 
-            });
+            }
 
+          });
 
-          }
+        }
 
-        )
+      )
 
-      );
+    );
 
 
     res.json({
 
-      message:"Advertisement generated",
+      message: "Advertisement generated",
 
       scenes
 
     });
 
 
-  }catch(error){
-
+  } catch (error) {
 
     console.log(error);
 
-
     res.status(500).json({
 
-      message:"Failed generating advertisement",
+      message: "Failed generating advertisement",
 
       error:
         error instanceof Error
-        ? error.message
-        : error
+          ? error.message
+          : error
 
     });
-
 
   }
 
