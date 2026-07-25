@@ -4,6 +4,7 @@ import prisma from "../lib/prisma.js";
 
 import { generateScript } from "../services/ai.service.js";
 import { generateImage } from "../services/image.service.js";
+import { generateVoice } from "../services/voice.service.js";
 
 
 // GENERATE PROJECT AD
@@ -35,6 +36,7 @@ export const generateProjectAd = async (
     }
 
 
+    // Generate AI script
     const aiResult = await generateScript(
       project.title
     );
@@ -45,9 +47,20 @@ export const generateProjectAd = async (
       aiResult.scenes.map(
         async (scene) => {
 
-          // Generate image for this scene
-          const image = await generateImage(scene.script);
 
+          // Generate image
+          const image = await generateImage(
+            scene.script
+          );
+
+
+          // Generate voice
+          const voice = await generateVoice(
+            scene.script
+          );
+
+
+          // Save scene
           return prisma.scene.create({
 
             data: {
@@ -58,17 +71,25 @@ export const generateProjectAd = async (
                 }
               },
 
+
               order: scene.order,
+
 
               script: scene.script,
 
+
               duration: 5,
 
-              imageUrl: image.url
+
+              imageUrl: image.url,
+
+
+              voiceUrl: voice.url
 
             }
 
           });
+
 
         }
 
@@ -88,7 +109,9 @@ export const generateProjectAd = async (
 
   } catch (error) {
 
+
     console.log(error);
+
 
     res.status(500).json({
 
@@ -100,6 +123,7 @@ export const generateProjectAd = async (
           : error
 
     });
+
 
   }
 

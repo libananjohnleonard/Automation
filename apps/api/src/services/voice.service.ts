@@ -1,10 +1,11 @@
 export const generateVoice = async (
-  text:string
-)=>{
+  script: string
+) => {
+
+  console.log("Generating voice for:", script);
 
   return {
-    voiceUrl:"https://placeholder.com/audio.mp3",
-    text
+    url: `https://example.com/audio/${encodeURIComponent(script)}.mp3`
   };
 
 };
